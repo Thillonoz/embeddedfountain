@@ -40,4 +40,6 @@ Detailed instructions on setting up the hardware, flashing the ESP32 with the fi
 - Implementation of a web interface for local control and monitoring.
 - Predictive control based on weather forecasts to optimize pump operation and water conservation.
 
-Feel free to contribute to this project by submitting issues or pull requests!
+## Concept image (made by Sora)
+
+![Sora concept image](/assets/images/concept.png)
