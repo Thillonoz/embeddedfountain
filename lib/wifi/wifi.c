@@ -147,7 +147,7 @@ static void event_handler(void *, esp_event_base_t event_base, int32_t event_id,
     }
 }
 
-esp_err_t wifi_init(void)
+esp_err_t wifi_init()
 {
     esp_err_t status = nvs_flash_init();
     if ((status == ESP_ERR_NVS_NO_FREE_PAGES) || (status == ESP_ERR_NVS_NEW_VERSION_FOUND))

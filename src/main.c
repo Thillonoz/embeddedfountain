@@ -8,11 +8,10 @@
 #include <driver/gpio.h>
 #include <driver/gptimer.h>
 #include <esp_task_wdt.h>
-#include <esp_http_client.h>
+#include <esp_sntp.h>
+#include <time.h>
 
 #define INTERVAL 10000;
-
-#define SERVER_URL "http://numbersapi.com/"
 
 static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
@@ -22,18 +21,6 @@ static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_dat
 
     button_update_state();
     return true;
-}
-
-void connect_wifi(void)
-{
-    if (ESP_OK == wifi_init())
-    {
-        printf("Wifi initialized successfully.\n");
-    }
-    else
-    {
-        printf("Failed to initialize wifi.\n");
-    }
 }
 
 void app_main()
@@ -72,26 +59,59 @@ void app_main()
     while (!wifi_connected())
     {
         putchar('.');
-        usleep(50000);
-
+        usleep(50000); // Sleep for 50 milliseconds
         if (BUTTON_FALLING_EDGE == button_get_state())
         {
             wifi_reset();
         }
     }
 
+    time_t now = 0;
+    struct tm timeinfo = {0};
+    const int retry_count = 10;
+    int retry = 0;
+    int ms = 1000;
+
+    // Initialize SNTP
+    ESP_LOGI("NTP", "Initializing SNTP");
+    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_set_sync_interval(3600 * ms); // Set sync interval to 1 hour
+    esp_sntp_setservername(0, "pool.ntp.org");
+    setenv("TZ", "CET-1CEST,M3.5.0/2,M10.5.0/3", 1);
+    tzset();
+    esp_sntp_init();
+
+    while (timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count)
+    {
+        printf("Waiting for system time to be set... (%d/%d)\n", retry, retry_count);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        time(&now);
+        localtime_r(&now, &timeinfo);
+    }
+
+    int i = 0;
+    int count = 10;
+
     while (1)
     {
+        time(&now);
+        localtime_r(&now, &timeinfo);
+        char strftime_buf[64];
+        strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
+
+        if (i % count == 0)
+        {
+            printf("Wifi state: %s\n", wifi_connected() ? "Connected" : "Disconnected");
+            printf("The current date and time: %s\n", strftime_buf);
+            i = 0;
+        }
+
         if (BUTTON_FALLING_EDGE == button_get_state())
         {
             wifi_reset();
         }
-        printf("Wifi state: %s\n", wifi_connected() ? "Connected" : "Disconnected");
+
         usleep(1000000); // Sleep for 1 second
-        if (!wifi_connected())
-        {
-            printf("Wifi disconnected. Reinitializing...\n");
-            wifi_reset();
-        }
+        ++i;
     }
 }

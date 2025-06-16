@@ -13,7 +13,7 @@
  *
  * @return esp_err_t ESP_OK if there is no error; otherwise ESP_ERR_*
  */
-esp_err_t wifi_init(void);
+esp_err_t wifi_init();
 
 /**
  * @brief This function is used to check if the wifi module is connected to the wifi network or not.
