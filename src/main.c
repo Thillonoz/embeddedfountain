@@ -1,5 +1,6 @@
 #include "wifi.h"
 #include "button.h"
+#include "water-level.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +28,9 @@ void app_main()
 {
     // Initialize a button on GPIO4 to be able to call reset_wifi(), it clears the NVS.
     assert(button_init(GPIO_NUM_4));
+
+    // Initialize a water level sensor on GPIO5.
+    assert(water_level_init(GPIO_NUM_5));
 
     gptimer_handle_t gptimer = NULL;
     gptimer_config_t timer_config;
@@ -108,6 +112,21 @@ void app_main()
         if (BUTTON_FALLING_EDGE == button_get_state())
         {
             wifi_reset();
+        }
+
+        printf("Water level ");
+        int state = water_level_get_state();
+        if (state == WATER_LEVEL_UNINITIALIZED)
+        {
+            printf("sensor not initialized.\n");
+        }
+        else if (state == WATER_LEVEL_HIGH)
+        {
+            printf("is high (closed).\n");
+        }
+        else if (state == WATER_LEVEL_LOW)
+        {
+            printf("is low (open).\n");
         }
 
         usleep(1000000); // Sleep for 1 second
