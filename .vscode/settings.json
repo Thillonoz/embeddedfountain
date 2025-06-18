@@ -11,6 +11,12 @@
         "wifi.h": "c",
         "time.h": "c",
         "esp_sntp.h": "c",
-        "ip.h": "c"
+        "ip.h": "c",
+        "gpio.h": "c",
+        "water-level.h": "c",
+        "bsp.h": "c",
+        "stddef.h": "c",
+        "button.h": "c",
+        "stdbool.h": "c"
     }
 }
