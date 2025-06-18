@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "esp_task_wdt.h": "c",
+        "algorithm": "c",
+        "format": "c",
+        "unistd.h": "c",
+        "string.h": "c",
+        "stdio.h": "c",
+        "esp_err.h": "c",
+        "cstdint": "c",
+        "wifi.h": "c",
+        "time.h": "c",
+        "esp_sntp.h": "c",
+        "ip.h": "c"
+    }
+}
