@@ -25,8 +25,7 @@ static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_dat
 
 void app_main()
 {
-    /* Initialize the button on GPIO4
-    ** and enable the internal pull-up resistor. */
+    // Initialize a button on GPIO4 to be able to call reset_wifi(), it clears the NVS.
     assert(button_init(GPIO_NUM_4));
 
     gptimer_handle_t gptimer = NULL;
