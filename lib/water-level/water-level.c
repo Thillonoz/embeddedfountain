@@ -7,7 +7,7 @@ static bool initialized = false;
 bool water_level_init(int pin)
 {
     _pin = pin;
-    initialized = bsp_pin_config(pin, BSP_MODE_INPUT, BSP_PULL_UP);
+    initialized = bsp_pin_config(pin, BSP_MODE_INPUT, BSP_PULL_UP_DISABLE);
     return initialized;
 }
 
@@ -17,9 +17,9 @@ int water_level_get_state()
     if (initialized)
     {
         state = bsp_pin_read(_pin);
-        if (state == LOW)
+        if (state == BSP_LOW)
             state = WATER_LEVEL_HIGH; // Water level is high (closed)
-        else if (state == HIGH)
+        else if (state == BSP_HIGH)
             state = WATER_LEVEL_LOW; // Water level is low (open)
     }
     return state;
