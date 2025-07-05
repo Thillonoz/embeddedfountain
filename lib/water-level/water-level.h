@@ -6,8 +6,6 @@
 #define WATER_LEVEL_HIGH 0          // Water level is high (closed)
 #define WATER_LEVEL_LOW 1           // Water level is low (open)
 #define WATER_LEVEL_UNINITIALIZED 2 // Water level sensor not initialized
-#define LOW 0
-#define HIGH 1
 
 /**
  * @brief Initialize the water level sensor module.

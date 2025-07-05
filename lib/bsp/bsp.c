@@ -12,3 +12,8 @@ int bsp_pin_read(int pin)
 {
     return gpio_get_level((gpio_num_t)pin);
 }
+
+int bsp_pin_write(int pin, int value)
+{
+    return gpio_set_level((gpio_num_t)pin, value);
+}

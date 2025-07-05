@@ -15,7 +15,7 @@ static int edge_event = BUTTON_UNINITITIALIZED;
 bool button_init(int pin)
 {
     _pin = pin;
-    initialized = bsp_pin_config(pin, BSP_MODE_INPUT, BSP_PULL_UP);
+    initialized = bsp_pin_config(pin, BSP_MODE_INPUT, BSP_PULL_UP_DISABLE);
     for (size_t i = 0; i < SAMPLES; ++i)
         sample_buffer[i] = BUTTON_RELEASED;
     sample_index = 0;
