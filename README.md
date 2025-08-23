@@ -18,12 +18,11 @@ This project details an intelligent, solar-powered fountain controlled by an ESP
 The following key components are used in this project:
 
 - Microcontroller: ESP32-C6-DevKitC-1
+- Power System: 25W solar panel with 12V LiFEPO4 Battery for off-grid backup and PWM Charge Controller
 - Relay Module: Relay 5V Optocoupler (for pump control)
-- ESP32 Programmer: ESP32 Programmer UART-USB
-- Power System: ECO-WORTHY 10W 12V Off-grid Solpanelsats with Lithium Battery and PWM Charge Controller
-- Breadboard Power Supply: Power supply for breadboard 3.3/5V USB-C (for development/testing)
-- Wind Sensor: Anemometer with Analog Output
+- Breadboard Power Supply: Power supply for breadboard 12V -> 3.3/5V
 - Water Level Sensor: Float switch
+- Wind Sensor: Anemometer with Analog Output
 
 ## Project Structure (Box/House)
 
