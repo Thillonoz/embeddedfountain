@@ -2,7 +2,7 @@
 #define MQTT_H
 
 // You need to create your own mqttcredentials.h file and define your own MQTT_USERNAME, MQTT_PASSWORD and MQTT_SERVER.
-// #include "mqttcredentials.h"
+// #include "mqtt_credentials.h"
 // -------------------------
 
 #include <mqtt_client.h>
