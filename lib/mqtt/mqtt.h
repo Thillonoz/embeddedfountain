@@ -10,13 +10,13 @@
 #include <string.h>
 #include <unistd.h>
 
+int mqtt_pump_state{0};
 static uint32_t MQTT_PORT{8883};
 static esp_mqtt_client_handle_t client;
 static const char *MQTT_CLIENTID{"ESP32C6"};
 static const char *TOPIC_BATTERY_VOLTAGE{"sensor/batteryvoltage"};
 static const char *TOPIC_PUMP_CONTROL{"actuator/pumpcontrol"};
 static const char *TAG{"mqtt_client"};
-static volatile bool connected{false};
 static const char *cert = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw
@@ -54,5 +54,7 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
 
 static void init_mqtt(void);
+
+bool mqtt_connected(void);
 
 #endif // MQTT_H

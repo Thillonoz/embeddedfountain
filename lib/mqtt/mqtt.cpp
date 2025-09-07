@@ -4,6 +4,8 @@
 #include <esp_log.h>
 #include <driver/gpio.h>
 
+static volatile bool connected{false};
+
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%ld", base, event_id);
@@ -42,11 +44,13 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             event->data[event->data_len] = 0;
             if (0 == strcmp("on", event->data))
             {
-                bsp_pin_write(PUMP_CONTROL_PIN, 1);
+                mqtt_pump_state = 1;
+                bsp_pin_write(PUMP_CONTROL_PIN, mqtt_pump_state);
             }
             else if (0 == strcmp("off", event->data))
             {
-                bsp_pin_write(PUMP_CONTROL_PIN, 0);
+                mqtt_pump_state = 0;
+                bsp_pin_write(PUMP_CONTROL_PIN, mqtt_pump_state);
             }
             else
             {
@@ -79,4 +83,9 @@ static void init_mqtt(void)
     client = esp_mqtt_client_init(&config);
     ESP_ERROR_CHECK(esp_mqtt_client_register_event(client, (esp_mqtt_event_id_t)ESP_EVENT_ANY_ID, mqtt_event_handler, NULL));
     ESP_ERROR_CHECK(esp_mqtt_client_start(client));
+}
+
+bool mqtt_connected(void)
+{
+    return connected;
 }

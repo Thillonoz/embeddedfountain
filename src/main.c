@@ -165,6 +165,11 @@ void app_main()
             desiredPumpState = OFF; // Turn off the pump outside of active hours
         }
 
+        if (mqtt_connected() && (desiredPumpState != mqtt_pump_state))
+        {
+            desiredPumpState = mqtt_pump_state;
+        }
+
         // If the desired pump state is different from the current state, change it
         if (desiredPumpState != pumpState)
         {
