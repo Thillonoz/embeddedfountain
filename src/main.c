@@ -132,7 +132,7 @@ void app_main()
             if (mqtt_connected())
             {
                 battery_voltage_run(); // Fetches ADC data
-                printf("Battery voltage: %.02fV\n", (v_bat * 1000.0f));
+                printf("Battery voltage: %.02fV\n", v_bat);
                 mqtt_publish();
             }
         }

@@ -51,5 +51,8 @@ void battery_voltage_run(void)
     ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, millivolts, &v_adc));
     ESP_LOGI(TAG, "ADC%d Channel[%d] Cali Voltage: %d mV", ADC_UNIT_1 + 1, ADC_CHANNEL_0, v_adc);
 
+    v_adc /= 1000.0f; // Convert mV to V
+
+    // Calculate the actual battery voltage using the voltage divider formula
     v_bat = v_adc * (R1 + R2) / R2;
 }
