@@ -1,8 +1,9 @@
 #include "pins.h"
+#include "battery_voltage.h"
 #include "bsp.h"
 #include "button.h"
 #include "mqtt.h"
-#include "water-level.h"
+#include "water_level.h"
 #include "wifi.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -18,6 +19,9 @@
 #define INTERVAL 10000;
 #define OFF 0
 #define ON 1
+
+static int day_start = 6;
+static int day_end = 21;
 
 static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
@@ -106,6 +110,8 @@ void app_main()
     int pumpState = OFF;
     int desiredPumpState = OFF; // Desired state of the pump, 0 = off, 1 = on
 
+    battery_voltage_init();
+
     while (1)
     {
         time(&now);
@@ -121,6 +127,16 @@ void app_main()
             iteration = 0; // Reset iteration counter, prevent overflow
         }
 
+        if (iteration % (count / 3) == 0) // Publish and print battery voltage every 10 seconds
+        {
+            if (mqtt_connected())
+            {
+                battery_voltage_run(); // Fetches ADC data
+                printf("Battery voltage: %.02fV\n", (v_bat * 1000.0f));
+                mqtt_publish();
+            }
+        }
+
         // Check if the button is pressed to reset the WiFi connection
         if (BUTTON_FALLING_EDGE == button_get_state())
         {
@@ -128,7 +144,7 @@ void app_main()
         }
 
         // Timetable logic for pump control
-        if (timeinfo.tm_hour >= 6 && timeinfo.tm_hour < 22)
+        if (timeinfo.tm_hour >= day_start && timeinfo.tm_hour < day_end)
         {
             printf("Water Level State: %d ", waterLevelBuffer);
 
@@ -142,7 +158,7 @@ void app_main()
             else if (waterLevelState == WATER_LEVEL_HIGH)
             {
                 ++waterLevelBuffer;
-                if (waterLevelBuffer > 4)
+                if (waterLevelBuffer > 4 && desiredPumpState == OFF)
                 {
                     desiredPumpState = ON; // Turn on the pump
                     waterLevelBuffer = 4;  // Prevent overflow
@@ -152,7 +168,7 @@ void app_main()
             else if (waterLevelState == WATER_LEVEL_LOW)
             {
                 --waterLevelBuffer;
-                if (waterLevelBuffer < 0)
+                if (waterLevelBuffer < 0 && desiredPumpState == ON)
                 {
                     desiredPumpState = OFF; // Turn off the pump
                     waterLevelBuffer = 0;   // Prevent negative overflow

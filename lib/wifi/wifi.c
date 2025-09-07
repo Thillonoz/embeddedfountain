@@ -146,7 +146,7 @@ static void event_handler(void *, esp_event_base_t event_base, int32_t event_id,
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         connected = true;
-        init_mqtt();
+        mqtt_init();
     }
 }
 
