@@ -1,8 +1,8 @@
 #ifndef MQTT_H
 #define MQTT_H
 
-// You need to create your own mqttcredentials.h file and define your own MQTT_USERNAME, MQTT_PASSWORD and MQTT_SERVER.
-// #include "mqtt_credentials.h"
+// You need to create your own mqtt_credentials.h file and define your own MQTT_USERNAME, MQTT_PASSWORD and MQTT_SERVER.
+#include "mqtt_credentials.h"
 // -------------------------
 
 #include <mqtt_client.h>
