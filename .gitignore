@@ -4,3 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 lib/wifi/credentials.h
+lib/mqtt/mqttcredentials.h

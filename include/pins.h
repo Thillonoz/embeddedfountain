@@ -1,0 +1,8 @@
+#ifndef PINS_H
+#define PINS_H
+
+#define BUTTON_PIN GPIO_NUM_4
+#define WATER_LEVEL_PIN GPIO_NUM_5
+#define PUMP_CONTROL_PIN GPIO_NUM_6
+
+#endif //PINS_H

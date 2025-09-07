@@ -1,7 +1,9 @@
+#include "pins.h"
 #include "bsp.h"
-#include "wifi.h"
 #include "button.h"
+#include "mqtt.h"
 #include "water-level.h"
+#include "wifi.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,13 +32,13 @@ static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_dat
 void app_main()
 {
     // Initialize a button on GPIO4 to be able to call reset_wifi(), it clears the NVS.
-    assert(button_init(GPIO_NUM_4));
+    assert(button_init(BUTTON_PIN));
 
     // Initialize a water level sensor on GPIO5.
-    assert(water_level_init(GPIO_NUM_5));
+    assert(water_level_init(WATER_LEVEL_PIN));
 
     // Initialize an output on GPIO6 for the pump control.
-    assert(bsp_pin_config(GPIO_NUM_6, GPIO_MODE_OUTPUT, GPIO_PULLUP_DISABLE));
+    assert(bsp_pin_config(PUMP_CONTROL_PIN, GPIO_MODE_OUTPUT, GPIO_PULLUP_DISABLE));
 
     // Initialize a timer to call button_update_state() every INTERVAL microseconds.
     gptimer_handle_t gptimer = NULL;
@@ -166,7 +168,7 @@ void app_main()
         // If the desired pump state is different from the current state, change it
         if (desiredPumpState != pumpState)
         {
-            bsp_pin_write(GPIO_NUM_6, desiredPumpState ? ON : OFF);
+            bsp_pin_write(PUMP_CONTROL_PIN, desiredPumpState ? ON : OFF);
             printf("Pump is turned %s.\n", desiredPumpState ? "on" : "off");
             pumpState = desiredPumpState;
         }

@@ -5,6 +5,8 @@
 #include "nvs_flash.h"
 #include "esp_task_wdt.h"
 
+#include "mqtt.h"
+
 //  In order to use your own hardcoded wifi ssid and password, you need to uncomment the following line. More info in wifi.h
 // #include "credentials.h"
 // -----------------------------------------------------------------------
@@ -144,6 +146,7 @@ static void event_handler(void *, esp_event_base_t event_base, int32_t event_id,
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         connected = true;
+        init_mqtt();
     }
 }
 
