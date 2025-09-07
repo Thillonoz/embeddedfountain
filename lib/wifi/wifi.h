@@ -7,7 +7,9 @@
 /**
  * @brief This function is used to read the wifi credentials from the nvs flash memory and use
  *        the credentials to connect the wifi module to a wifi network. You can hardcode the credentials
- *        in a credentials.h file in the wifi folder. If there is no wifi credential stored in the flash memory
+ *        in a credentials.h file in the wifi folder. To do this you need to define 2 macros;
+ *        ** SSID_KEY ** and ** PASS_KEY **
+ *        If there is no wifi credential stored in the flash memory
  *        or there is no credentials.h file, it asks the user to enter ssid and password in the terminal
  *        and then stores them in the flash memory.
  *

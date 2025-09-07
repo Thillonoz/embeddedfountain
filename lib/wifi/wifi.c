@@ -5,8 +5,8 @@
 #include "nvs_flash.h"
 #include "esp_task_wdt.h"
 
-//  You have to make your own credentials.h file or remove the include line
-#include "credentials.h"
+//  In order to use your own hardcoded wifi ssid and password, you need to uncomment the following line. More info in wifi.h
+// #include "credentials.h"
 // -----------------------------------------------------------------------
 
 #ifndef SSID_KEY
