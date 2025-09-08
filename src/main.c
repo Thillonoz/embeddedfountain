@@ -20,8 +20,10 @@
 #define OFF 0
 #define ON 1
 
-static int day_start = 6;
-static int day_end = 21;
+static const int day_start = 6;
+static const int day_end = 21;
+static const float battery_voltage_min = 12.9f;
+static const float battery_voltage_stable = 13.3f;
 
 static bool timer_on_alarm(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
@@ -109,6 +111,7 @@ void app_main()
     int waterLevelBuffer = 0; // Buffer to prevent rapid state changes
     int pumpState = OFF;
     int desiredPumpState = OFF; // Desired state of the pump, 0 = off, 1 = on
+    bool lowBattery = false;    // Flag to indicate if the battery is low
 
     battery_voltage_init();
 
@@ -131,7 +134,7 @@ void app_main()
         {
             if (mqtt_connected())
             {
-                battery_voltage_run(); // Fetches ADC data
+                battery_voltage_run(); // Update v_bat variable
                 printf("Battery voltage: %.02fV\n", v_bat);
                 mqtt_publish();
             }
@@ -175,23 +178,33 @@ void app_main()
                 }
                 printf("is low (open).\n");
             }
+
+            if (desiredPumpState == ON && v_bat < battery_voltage_min)
+            {
+                lowBattery = true;      // Set low battery flag
+                desiredPumpState = OFF; // Turn off the pump if battery voltage is too low
+            }
+            else if (v_bat >= battery_voltage_stable && iteration % count == 30)
+            {
+                lowBattery = false; // Clear low battery flag when voltage is sufficient
+            }
         }
         else
         {
             desiredPumpState = OFF; // Turn off the pump outside of active hours
         }
 
-        if (mqtt_connected() && (desiredPumpState != mqtt_pump_state))
+        if (mqtt_connected() && (desiredPumpState != mqtt_pump_state) && !lowBattery)
         {
             desiredPumpState = mqtt_pump_state;
         }
 
         // If the desired pump state is different from the current state, change it
-        if (desiredPumpState != pumpState)
+        if (desiredPumpState != pumpState && !lowBattery)
         {
-            bsp_pin_write(PUMP_CONTROL_PIN, desiredPumpState ? ON : OFF);
-            printf("Pump is turned %s.\n", desiredPumpState ? "on" : "off");
             pumpState = desiredPumpState;
+            bsp_pin_write(PUMP_CONTROL_PIN, pumpState ? ON : OFF);
+            printf("Pump is turned %s.\n", pumpState ? "on" : "off");
         }
 
         usleep(1000000); // Sleep for 1 second

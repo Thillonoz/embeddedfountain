@@ -13,10 +13,10 @@ const static char *TAG = "Battery Voltage";
 static adc_oneshot_unit_handle_t adc_handle;
 static adc_cali_handle_t cali_handle = NULL;
 
-static int millivolts;
+static int millivolts = 0;
 static const float R1 = 99000.0f; // Resistor R1 value in ohms
 static const float R2 = 24600.0f; // Resistor R2 value in ohms
-static float v_adc;               // Measured voltage at the ADC pin
+static float v_adc = 0.0f;               // Measured voltage at the ADC pin
 
 void battery_voltage_init(void)
 {
